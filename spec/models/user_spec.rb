@@ -62,19 +62,18 @@ RSpec.describe User, type:  :model do
   it "should reject short password" do
     short = "a" * 5
     invalid_password_user = User.new attr.merge password: short,
-    password_confirmation: short,
+    password_confirmation: short
     expect(invalid_password_user).to be_invalid
   end
   
   it "should reject long password" do
     long = "a" * 41
     invalid_password_user = User.new attr.merge password: long,
-    password_confirmation: long,
+    password_confirmation: long
     expect(invalid_password_user).to be_invalid
   end
   
   describe "password encryption" do
-    
     let(:user) do
       User.create! attr
     end
@@ -88,7 +87,6 @@ RSpec.describe User, type:  :model do
     end
     
     describe "has password method" do
-      
       it "should be true if the password match" do
         expect(user.has_password? attr[:password]).to be_truthy
       end
@@ -96,26 +94,23 @@ RSpec.describe User, type:  :model do
       it "should be false if the password does not match" do
         expect(user.has_password? 'invalid').to be false
       end
-      
     end
     
     describe "authenticate method" do
-      
       it "should return nil on email/password mismatch" do
-        wrong_password_user = User.authenticate attr[:email], "wrongpassword"
+        wrong_password_user = User.authenticate user.email, "wrongpassword"
         expect(wrong_password_user).to be_nil
       end
       
       it "should return nil for an email with no user" do
-        nonexistent_user = User.authenticate "nouser@test.org" attr[:password]
+        nonexistent_user = User.authenticate "nouser@test.org", user.password
         expect(nonexistent_user).to be_nil
       end
       
       it "should return user on email/password match" do
-        matching_user = User.authenticate attr[:email], attr[:password]
-        expect(matching_user).to equal user
+        matching_user = User.authenticate user.email, user.password
+        expect(matching_user).to eql(user)
       end
-      
     end
   end
 end
