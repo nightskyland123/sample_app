@@ -20,6 +20,8 @@ class User < ActiveRecord::Base
   
   has_many  :microposts
   
+  has_many  :comments
+  
   def has_password?(submitted_password)
     encrypted_password == encrypt(submitted_password)
   end

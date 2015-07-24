@@ -10,6 +10,7 @@ class MicropostsController < ApplicationController
   # GET /microposts/1
   # GET /microposts/1.json
   def show
+    @comments = @micropost.comments
   end
 
   # GET /microposts/new
@@ -41,7 +42,7 @@ class MicropostsController < ApplicationController
   # PATCH/PUT /microposts/1.json
   def update
     respond_to do |format|
-      if @micropost.update(micropost_params)
+      if current_user && current_user.id == @micropost.user_id && @micropost.update(micropost_params)
         format.html { redirect_to @micropost, notice: 'Micropost was successfully updated.' }
         format.json { render :show, status: :ok, location: @micropost }
       else
@@ -54,7 +55,9 @@ class MicropostsController < ApplicationController
   # DELETE /microposts/1
   # DELETE /microposts/1.json
   def destroy
-    @micropost.destroy
+    if current_user && current_user.id == @micropost.user_id 
+      @micropost.destroy
+    end
     respond_to do |format|
       format.html { redirect_to microposts_url, notice: 'Micropost was successfully destroyed.' }
       format.json { head :no_content }
@@ -64,7 +67,7 @@ class MicropostsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_micropost
-      @micropost = current_user && current_user.microposts.find(params[:id])
+      @micropost = Micropost.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

@@ -17,8 +17,13 @@
         <td><%= micropost.content %></td>
         <td><%= micropost.user_id %></td>
         <td><%= link_to 'Show', micropost %></td>
-        <td><%= link_to 'Edit', edit_micropost_path(micropost) %></td>
-        <td><%= link_to 'Destroy', micropost, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <% if current_user && current_user.id == micropost.user_id %>
+          <td><%= link_to 'Edit', edit_micropost_path(micropost) %></td>
+          <td><%= link_to 'Destroy', micropost, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <% else %>
+          <td></td>
+          <td></td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
@@ -26,4 +31,6 @@
 
 <br>
 
-<%= link_to 'New Micropost', new_micropost_path %>
+<% if current_user %>
+  <%= link_to 'New Micropost', new_micropost_path %>
+<% end %>
